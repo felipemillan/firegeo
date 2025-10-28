@@ -397,9 +397,9 @@ Examples of mentions to catch:
 
     let object;
     try {
-      // Use gpt-5-nano for structured output (always use OpenAI in dev mode)
+      // Use gpt-5-mini for structured output (always use OpenAI in dev mode)
       const structuredModel = normalizedProvider === 'anthropic'
-        ? getProviderModel('openai', 'gpt-5-nano') || model
+        ? getProviderModel('openai', 'gpt-5-mini') || model
         : model;
       
       const result = await generateObject({
