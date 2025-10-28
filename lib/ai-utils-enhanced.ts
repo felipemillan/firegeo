@@ -48,9 +48,9 @@ export async function analyzePromptWithProviderEnhanced(
   
   // Handle provider-specific web search configurations
   if (normalizedProvider === 'openai' && useWebSearch) {
-    // Use OpenAI's web search via responses API
-    model = getProviderModel('openai', 'gpt-4o-mini', { useWebSearch: true });
-    // Note: Web search tools configuration would need to be handled by the provider's getModel implementation
+    // Use gpt-5-mini with web search enabled
+    model = getProviderModel('openai', 'gpt-5-mini', { useWebSearch: true });
+    // Note: Web search is enabled for gpt-5-mini via responses API
   } else {
     // Get model with web search options if supported
     model = getProviderModel(normalizedProvider, undefined, { useWebSearch });
@@ -104,8 +104,8 @@ Be very thorough in detecting company names - they might appear in different con
 
     let object;
     try {
-      // Use a fast model for structured output
-      const analysisModel = getProviderModel('openai', 'gpt-4o-mini');
+      // Use gpt-5-mini for structured output
+      const analysisModel = getProviderModel('openai', 'gpt-5-mini');
       if (!analysisModel) {
         throw new Error('Analysis model not available');
       }

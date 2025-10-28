@@ -52,12 +52,14 @@ export interface ProviderConfig {
  * Provider Enable/Disable Configuration
  * Set to true to enable a provider, false to disable it
  * Even if enabled, the provider must have a valid API key to be used
+ *
+ * CONFIGURED FOR DEVELOPMENT: Only OpenAI with gpt-5-mini enabled (with web search)
  */
 export const PROVIDER_ENABLED_CONFIG: Record<string, boolean> = {
-  openai: true,      // OpenAI is enabled
-  anthropic: true,   // Anthropic is enabled
-  google: false,     // Google is disabled
-  perplexity: true,  // Perplexity is enabled
+  openai: true,      // OpenAI is enabled (using gpt-5-mini with web search)
+  anthropic: false,  // Anthropic is DISABLED
+  google: false,     // Google is DISABLED
+  perplexity: false, // Perplexity is DISABLED
 };
 
 /**
@@ -73,33 +75,17 @@ export const PROVIDER_CONFIGS: Record<string, ProviderConfig> = {
     enabled: PROVIDER_ENABLED_CONFIG.openai,
     models: [
       {
-        id: 'gpt-4o',
-        name: 'GPT-4 Optimized',
+        id: 'gpt-5-mini',
+        name: 'GPT-5 Mini',
         maxTokens: 128000,
         supportsFunctionCalling: true,
         supportsStructuredOutput: true,
-        supportsWebSearch: false,
-      },
-      {
-        id: 'gpt-4o-mini',
-        name: 'GPT-4 Mini',
-        maxTokens: 128000,
-        supportsFunctionCalling: true,
-        supportsStructuredOutput: true,
-        supportsWebSearch: true, // Via responses API
-      },
-      {
-        id: 'gpt-4-turbo',
-        name: 'GPT-4 Turbo',
-        maxTokens: 128000,
-        supportsFunctionCalling: true,
-        supportsStructuredOutput: true,
-        supportsWebSearch: false,
+        supportsWebSearch: true, // Web search enabled for gpt-5-mini
       },
     ],
-    defaultModel: 'gpt-4o',
+    defaultModel: 'gpt-5-mini',
     capabilities: {
-      webSearch: true, // Via responses API with specific models
+      webSearch: true, // Web search enabled via responses API
       functionCalling: true,
       structuredOutput: true,
       streamingResponse: true,
@@ -107,13 +93,14 @@ export const PROVIDER_CONFIGS: Record<string, ProviderConfig> = {
     },
     getModel: (modelId?: string, options?: any) => {
       if (!process.env.OPENAI_API_KEY) return null;
-      const model = modelId || PROVIDER_CONFIGS.openai.defaultModel;
-      
+      // Always use gpt-5-mini regardless of modelId parameter
+      const model = 'gpt-5-mini';
+
       // Use responses API for web search if requested
-      if (options?.useWebSearch && model === 'gpt-4o-mini') {
+      if (options?.useWebSearch) {
         return openai.responses(model);
       }
-      
+
       return openai(model);
     },
     isConfigured: () => !!process.env.OPENAI_API_KEY,
